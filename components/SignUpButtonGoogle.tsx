@@ -25,7 +25,7 @@ export default function SignUpButton() {
         type="submit"
         disabled={isLoading}
       >
-        {isLoading ? "Signing in..." : "Sign Up"}
+        {isLoading ? "Signing in..." : "Continue with Google"}
       </button>
     </form>
   );
