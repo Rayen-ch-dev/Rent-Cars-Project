@@ -1,3 +1,5 @@
+import { IFormField, IFormFieldsVariables } from "@/types/app";
+
 interface Props extends IFormFieldsVariables{};
 export const useFormFields = ({slug}:Props)=>{
     const loginFields =(): IFormField[] => {
@@ -61,7 +63,7 @@ export const useFormFields = ({slug}:Props)=>{
             case "register":
                 return registerFields();
             default:
-                return [];   b
+                return [];   
         }
     };
     return {getFormFields};

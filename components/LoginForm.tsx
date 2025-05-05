@@ -6,10 +6,17 @@ import { IFormField } from "@/types/app";
 import { useRef } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-
+import SignUpButton from "@/components/SignUpButtonGoogle";
+import { Eye, EyeOff } from "lucide-react";
 const LoginForm = () => {
+  const [showPassword, setShowPassword] = useState({});
+
+
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
   const formRef = useRef<HTMLFormElement>(null);
   const { getFormFields } = useFormFields({ slug: "login" });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -30,16 +37,13 @@ const LoginForm = () => {
         email: data.email,
         password: data.password,
       });
-      if(res?.error){
+      if (res?.error) {
         toast.error("Invalid email or password");
-      }else{
+      } else {
         toast.success("Login successful");
         router.push("/");
         router.refresh();
-
       }
-
-     
     } catch (error) {
       console.error("Authentication error:", error);
       toast.error("Something went wrong");
@@ -53,34 +57,67 @@ const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={onSubmit} ref={formRef}>
+    <form
+      onSubmit={onSubmit}
+      ref={formRef}
+      className="w-full max-w-md mx-auto p-4 border rounded-lg shadow-lg mt-10 mb-3"
+      autoComplete="off"
+    >
       {getFormFields().map((field: IFormField) => (
-        <div key={field.name} className="mb-3">
+        <div key={field.name} className="mb-1">
           <label
             htmlFor={field.name}
-            className="block text-sm font-medium text-gray-700"
+            className="block text-lg font-medium text-white mb-1"
           >
             {field.label}
           </label>
-          <input
-            type={field.type}
-            name={field.name}
-            placeholder={field.placeholder}
-            required={field.required}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          />
+          <div className="relative">
+            <input
+              type={
+                field.type === "password" && showPassword
+                  ? "text"
+                  : field.type
+              }
+              name={field.name}
+              placeholder={field.placeholder}
+              required={field.required}
+              className="block w-full p-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+            />
+            {field.type === "password" && (
+              <button
+                type="button"
+                onClick={() => togglePasswordVisibility()}
+                className="absolute right-2 top-2"
+              >
+                {showPassword ? (
+                  <EyeOff size={20} />
+                ) : (
+                  <Eye size={20} />
+                )}
+              </button>
+            )}
+          </div>
           {errors[field.name] && (
-            <p className="text-sm text-red-500 mt-1">{errors[field.name]}</p>
+            <p className="text-sm text-red-500 mt-2 ml-1">
+              {errors[field.name]}
+            </p>
           )}
         </div>
       ))}
+
       <button
         type="submit"
-        className="mt-3 w-full rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        className="w-full border hover:bg-white cursor-pointer hover:text-black text-white font-bold py-2 px-6 rounded-lg mt-5"
         disabled={isLoading}
       >
         {isLoading ? "Signing in ..." : "Sign in"}
       </button>
+      <div className="flex justify-center mt-4">
+        --------------OR---------------
+      </div>
+      <div className="flex justify-center ">
+        <SignUpButton />
+      </div>
     </form>
   );
 };

@@ -7,9 +7,13 @@ import { signup } from "@/app/actions/auth";
 import { useFormFields } from "@/hooks/useFormFields";
 import { IFormField } from "@/types/app";
 import { toast } from "sonner";
-
+import { Eye, EyeOff } from "lucide-react";
 export default function RegisterForm() {
-  const router = useRouter(); 
+  const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const initialState: {
     message?: string;
@@ -28,7 +32,7 @@ export default function RegisterForm() {
 
   useEffect(() => {
     if (state.status === 201 && state.message) {
-      toast.success(state.message); 
+      toast.success(state.message);
       router.push("/LogIn");
     } else if (state.status && state.status >= 400) {
       toast.error("Registration failed. Please check your input.");
@@ -38,26 +42,45 @@ export default function RegisterForm() {
   return (
     <form
       action={action}
-      className="w-full max-w-sm"
+      className="w-full max-w-md mx-auto p-4  border rounded-lg shadow-lg mt-10 mb-3"
       autoComplete="off"
     >
       {getFormFields().map((field: IFormField) => (
-        <div key={field.name} className="mb-3">
+        <div key={field.name} className="mb-1">
           <label
             htmlFor={field.name}
-            className="block text-sm font-medium text-gray-700"
+            className="block text-lg font-medium  text-white mb-1"
           >
             {field.label}
           </label>
-          <input
-            type={field.type}
-            name={field.name}
-            placeholder={field.placeholder}
-            required={field.required}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          />
+          <div className="relative">
+            <input
+              type={
+                field.type === "password" && showPassword
+                  ? "text"
+                  : field.type
+              }
+              name={field.name}
+              placeholder={field.placeholder}
+              required={field.required}
+              className="block w-full p-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+            />
+            {field.type === "password" && (
+              <button
+                type="button"
+                onClick={() => togglePasswordVisibility()}
+                className="absolute right-2 top-2"
+              >
+                {showPassword ? (
+                  <EyeOff size={20} />
+                ) : (
+                  <Eye size={20} />
+                )}
+              </button>
+            )}
+          </div>
           {state?.error?.[field.name] && (
-            <p className="text-sm text-red-500 mt-1">
+            <p className="text-sm text-red-500 mt-2 ml-1">
               {state.error[field.name]}
             </p>
           )}
@@ -65,7 +88,7 @@ export default function RegisterForm() {
       ))}
       <button
         type="submit"
-        className="mt-3 w-full rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none"
+        className="w-full border hover:bg-white cursor-pointer hover:text-black text-white font-bold py-2 px-6 rounded-lg mt-5"
       >
         Register
       </button>

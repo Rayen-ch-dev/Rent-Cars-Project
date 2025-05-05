@@ -1,5 +1,4 @@
 import React from 'react'
-import SignUpButton from "@/components/SignUpButtonGoogle";
 import LoginForm from "@/components/LoginForm";
 import Link from "next/link";
 const SignIn = () => {
@@ -8,12 +7,12 @@ const SignIn = () => {
         <section className="flex flex-col items-center justify-center">
             <h1 className="text-4xl font-bold">Sign Up</h1>
             <LoginForm />
-            {/* continue with google*/}
-            <SignUpButton />
+            
+            
             {/* Sign up with credentials*/}
             <Link href="/SignUp">
                 <button>
-                    Sign Up
+                    don't have an account? <span className=' text-blue-600 underline font-bold hover:text-blue-800 cursor-pointer'>Sign up</span> 
                 </button>
             </Link>
 

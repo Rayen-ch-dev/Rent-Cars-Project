@@ -21,7 +21,7 @@ export default function SignUpButton() {
   return (
     <form onSubmit={handleSignIn}>
       <button
-        className="bg-white hover:bg-black hover:text-white transition duration-300 text-black px-4 py-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full border bg-white cursor-pointer text-black mt-4 hover:text-white hover:bg-black font-bold py-2 px-8  rounded-lg "
         type="submit"
         disabled={isLoading}
       >
