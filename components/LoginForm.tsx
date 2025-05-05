@@ -1,67 +1,49 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
+import { signIn, useSession } from "next-auth/react";
 import { useState } from "react";
 import { useFormFields } from "@/hooks/useFormFields";
 import { IFormField } from "@/types/app";
 import { useRef } from "react";
 import { toast } from "sonner";
-import { login } from "@/app/actions/auth";
 import { useRouter } from "next/navigation";
+
 const LoginForm = () => {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const [isLoading, setIsLoading] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const { getFormFields } = useFormFields({ slug: "login" });
+ 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formRef.current) return;
-
+  
     const formData = new FormData(formRef.current);
-    const data: Record<string, string> = {
+    const data = {
       email: formData.get("email") as string,
       password: formData.get("password") as string,
     };
-
+  
     try {
       setIsLoading(true);
-      const res = await login("credentials", {
+      const res = await signIn("credentials", {
+        redirect: false,
         email: data.email,
         password: data.password,
-      }, { 
-        redirect: true 
+       
       });
-
-      if (res?.error) {
-        /*
-            try {
-              const parsedError = JSON.parse(res.error);
-              console.log("Response error:", parsedError.responseError);
-      
-              if (parsedError.validationErrors) {
-                parsedError.validationErrors.forEach((error: any) => {
-                  const field = getFormFields().find(f => f.name === error.path[0]);
-                  if (field) field.error = error.message;
-                });
-              }
-            } catch (jsonError) {
-              console.error("Login failed (non-JSON error):", res.error);
-            }*/
-
-              toast.error("Invalid email or password", {
-                duration: 3000,
-              });
-        return;
-      }
-      if (res.status === 200) {
-        toast.error("login successful", {
-          duration: 3000,
-          
-          
-        });
+  
+      if (res?.ok) {
+        toast.success("Login successful");
         router.push("/");
+        router.refresh(); 
+      } else {
+        toast.error("Invalid email or password");
       }
     } catch (error) {
       console.error("Authentication error:", error);
+      toast.error("Something went wrong");
     } finally {
       setIsLoading(false);
     }

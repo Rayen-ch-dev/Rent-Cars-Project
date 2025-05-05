@@ -10,7 +10,7 @@ const Header = async () => {
   return (
     <header className="flex justify-between items-center py-4">
       <div className="flex items-center gap-2">
-        <img src={null} alt="logo" />
+        <img src={"#"} alt="logo" />
         <h1 className="text-xl font-bold font-mono">Rent-car</h1>
       </div>
 
