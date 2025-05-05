@@ -1,7 +1,6 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { signIn, useSession } from "next-auth/react";
-import { useState } from "react";
 import { useFormFields } from "@/hooks/useFormFields";
 import { IFormField } from "@/types/app";
 import { useRef } from "react";
@@ -10,40 +9,44 @@ import { useRouter } from "next/navigation";
 
 const LoginForm = () => {
   const router = useRouter();
-  const { data: session, status } = useSession();
   const [isLoading, setIsLoading] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const { getFormFields } = useFormFields({ slug: "login" });
- 
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formRef.current) return;
-  
+
     const formData = new FormData(formRef.current);
     const data = {
       email: formData.get("email") as string,
       password: formData.get("password") as string,
     };
-  
+
     try {
       setIsLoading(true);
       const res = await signIn("credentials", {
         redirect: false,
         email: data.email,
         password: data.password,
-       
       });
-  
-      if (res?.ok) {
+      if(res?.error){
+        toast.error("Invalid email or password");
+      }else{
         toast.success("Login successful");
         router.push("/");
-        router.refresh(); 
-      } else {
-        toast.error("Invalid email or password");
+        router.refresh();
+
       }
+
+     
     } catch (error) {
       console.error("Authentication error:", error);
       toast.error("Something went wrong");
+      setErrors({
+        email: "Invalid email",
+        password: "Incorrect password",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -66,6 +69,9 @@ const LoginForm = () => {
             required={field.required}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
           />
+          {errors[field.name] && (
+            <p className="text-sm text-red-500 mt-1">{errors[field.name]}</p>
+          )}
         </div>
       ))}
       <button

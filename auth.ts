@@ -36,20 +36,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           },
         });
 
-        if (!user || !user.password) {
+        if (!user ) {
           return null;
         }
-
+        
         const passwordMatch = await bcrypt.compare(
           credentials.password as string,
-          user.password
+          user.password as string
         );
 
         if (!passwordMatch) {
-          return null;
+          return null
+          
         }
 
-        // NextAuth will handle creating the session and cookies
         return {
           id: user.id,
           name: user.name,
