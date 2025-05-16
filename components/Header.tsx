@@ -8,14 +8,14 @@ const Header = async () => {
   const session = await auth();
 
   return (
-    <header className="flex justify-between items-center py-4">
+    <header className="flex bg-black z-50 fixed top-0 w-full left-0 mx-3 justify-between items-center py-4">
       <div className="flex items-center gap-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
         <Image
           src="/images/logo.png"
           alt="logo"
           width={40}
           height={40}
-          className="rounded-full" 
+          className="rounded-full"
         />
       </div>
 
@@ -27,19 +27,19 @@ const Header = async () => {
           Home
         </Link>
         <Link
-          href="/Services"
+          href="/cars"
           className="hover:text-gray-300 hover:underline decoration-2"
         >
-          Services
+          Cars
         </Link>
         <Link
-          href="/Contact"
+          href="/contact"
           className="hover:text-gray-300 hover:underline decoration-2"
         >
           Contact
         </Link>
         <Link
-          href="/About"
+          href="/about"
           className="hover:text-gray-300 hover:underline decoration-2"
         >
           About

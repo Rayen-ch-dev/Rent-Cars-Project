@@ -10,11 +10,11 @@ export default function Home() {
         EasyRide offers fast, affordable car rentals with a simple booking
         process and reliable vehicles for any trip.
       </p>
-      <Link href={""} className="border bg-amber-50 hover:bg-black hover:text-white transition duration-300 text-black mr-4 px-4 py-2 rounded-md">
-        Book Now
+      <Link href="/cars" className="border bg-amber-50 hover:bg-black hover:text-white transition duration-300 text-black mr-4 px-4 py-2 rounded-md">
+        Get Started
       </Link>
-      <Link href={""} className="border hover:bg-white hover:text-black transition duration-300 text-white mr-4 px-4 py-2 rounded-md">
-        Explore Us
+      <Link href="/contact" className="border hover:bg-white hover:text-black transition duration-300 text-white mr-4 px-4 py-2 rounded-md">
+        Contact Us
       </Link>
       </div>
       <div className="-mr-64  -mt-20">
