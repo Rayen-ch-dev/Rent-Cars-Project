@@ -8,7 +8,7 @@ const Header = async () => {
   const session = await auth();
 
   return (
-    <header className="flex justify-between items-center py-4">
+    <header className="flex bg-black  fixed top-0 left-0 w-full px-4 justify-between items-center py-4">
       <div className="flex items-center gap-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
         <Image
           src="/images/logo.png"
