@@ -3,7 +3,6 @@ import "./globals.css";
 import Link from "next/link";
 export default function Home() {
   return (
-    
     <div className="container  mx-auto bg-black flex  justify-center items-center">
       <div className="w-1/2 -ml-64 -mt-28" >
       <h1 className="text-6xl py-3.5">Car Rental</h1>
@@ -18,11 +17,9 @@ export default function Home() {
         Explore Us
       </Link>
       </div>
-      <div className="-mr-64  ">
-        <Image src={"/Images/photoCar-removebg-preview.png"} width={600} height={600} alt="backgroundImage" className="-mt-12" />
+      <div className="-mr-64  -mt-20">
+        <Image src={"/Images/photoCar-removebg-preview.png"} width={600} height={600} alt="backgroundImage" />
       </div>
-
-
       
     </div>
   );
