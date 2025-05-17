@@ -5,20 +5,25 @@ import { useFormFields } from "@/hooks/useFormFields";
 import { IFormField } from "@/types/app";
 import { useRef } from "react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import SignUpButton from "@/components/SignUpButtonGoogle";
 import { Eye, EyeOff } from "lucide-react";
-const LoginForm = () => {
-  const [showPassword, setShowPassword] = useState({});
 
+const LoginForm = () => {
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
   const formRef = useRef<HTMLFormElement>(null);
   const { getFormFields } = useFormFields({ slug: "login" });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formRef.current) return;
@@ -35,12 +40,19 @@ const LoginForm = () => {
         redirect: false,
         email: data.email,
         password: data.password,
+        callbackUrl,
       });
+
       if (res?.error) {
         toast.error("Invalid email or password");
       } else {
         toast.success("Login successful");
-        router.push("/");
+        // Only redirect after successful login
+        if (res?.url) {
+          router.push(res.url);
+        } else {
+          router.push(callbackUrl);
+        }
         router.refresh();
       }
     } catch (error) {

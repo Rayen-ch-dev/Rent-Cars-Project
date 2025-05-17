@@ -7,13 +7,13 @@ import { signupSchema } from "@/validations/auth";
 
 import { signIn, signOut } from "@/auth";
 import { revalidatePath } from "next/cache";
+import { json } from "stream/consumers";
 //sign in with google
-export async function signInWithGoogle() {
+export async function signInWithGoogle(callbackUrl: string = "/") {
   try {
     await signIn("google", {
       redirect: true,
-      redirectTo: "/",
-      callbackUrl: "/",
+      redirectTo: callbackUrl,
     });
   } catch (error) {
     console.error("Authentication error:", error);
@@ -127,6 +127,25 @@ export const signup = async (prevState: unknown, formData: FormData) => {
     };
   } catch (error) {
     console.error("Signup error:", error);
+    return {
+      status: 500,
+      error: "Internal server error",
+    };
+  }
+};
+// get all locations
+export const getLocations = async () => {
+  try {
+    const locations = await db.location.findMany();
+    return {
+      status: 200,
+      body: { 
+        locations: locations 
+      } 
+      
+    };
+  } catch (error) {
+    console.error("Error getting locations:", error);
     return {
       status: 500,
       error: "Internal server error",

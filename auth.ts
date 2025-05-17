@@ -6,7 +6,6 @@ import { db } from "./db";
 import bcrypt from "bcrypt";
 import { redirect } from "next/dist/server/api-utils";
 
-
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(db),
   session: {
@@ -25,7 +24,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
-      
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
@@ -36,18 +34,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           },
         });
 
-        if (!user ) {
+        if (!user) {
           return null;
         }
-        
+
         const passwordMatch = await bcrypt.compare(
           credentials.password as string,
           user.password as string
         );
 
         if (!passwordMatch) {
-          return null
-          
+          return null;
         }
 
         return {
@@ -55,12 +52,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           name: user.name,
           email: user.email,
         };
-     
       },
     }),
   ],
   pages: {
-    signIn: "/LogIn"
+    signIn: "/login",
   },
   cookies: {
     sessionToken: {
@@ -87,6 +83,25 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.id = token.id;
       }
       return session;
+    },
+    redirect: async ({ url, baseUrl }) => {
+      // If the URL is relative, make it absolute
+      if (url.startsWith("/")) {
+        // Check if the URL contains an invalid card ID
+        if (
+          url.includes("/cards/") &&
+          !/^[0-9a-fA-F]{24}$/.test(url.split("/cards/")[1])
+        ) {
+          return `${baseUrl}/cards`; // Redirect to cards list if ID is invalid
+        }
+        return `${baseUrl}${url}`;
+      }
+      // If the URL is from the same origin, allow it
+      if (new URL(url).origin === baseUrl) {
+        return url;
+      }
+      // Default to base URL for any other cases
+      return baseUrl;
     },
   },
 });

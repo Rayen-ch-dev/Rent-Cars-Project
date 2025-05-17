@@ -111,7 +111,7 @@ const Footer = () => {
 
         <div className="w-full bg-black/5 p-4 text-center">
           © 2025
-          <a href="https://tw-elements.com/"> Car Rental</a>
+          <a href="https://tw-elements.com/"> All rights reserved</a>
         </div>
       </footer>
     </div>

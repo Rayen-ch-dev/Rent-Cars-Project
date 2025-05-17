@@ -1,21 +1,12 @@
-import React from "react";
+// app/cars/page.tsx or wherever this is in App Router
 import Image from "next/image";
 import { db } from "@/db";
-import ClientCarCard from "@/components/ClientCarCard";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation"; // For server-side redirects
+import BookNowButton from "@/components/BookingNowButton";
 
-export default async function CarsPage() {
-  const session = await auth();
-  
-  // Redirect unauthenticated users to /LogIn
-  if (!session) {
-    redirect("/LogIn");
-  }
+
+const CarsPage = async () => {
 
   const cars = await db.car.findMany();
-  console.log(cars); // Logs to server terminal
-
   return (
     <div className="container mx-auto min-h-screen p-8">
       <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">
@@ -30,7 +21,7 @@ export default async function CarsPage() {
           >
             <div className="relative h-48 w-full">
               <Image
-                src={car.imageUrl || "/Images/photoCar-removebg-preview.png"} // Use car.image if available
+                src={"/Images/photoCar-removebg-preview.png"}
                 alt={car.name}
                 fill
                 className="object-cover"
@@ -71,12 +62,13 @@ export default async function CarsPage() {
                     </div>
                   ))}
               </div>
-
-              <ClientCarCard key={car.id} car={car} />
+                <BookNowButton key={car.id} car={car} />
             </div>
           </div>
         ))}
       </div>
     </div>
   );
-}
+};
+
+export default CarsPage;
