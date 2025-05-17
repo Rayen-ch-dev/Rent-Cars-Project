@@ -44,7 +44,25 @@ model Booking {
   car      Car      @relation(fields: [carId], references: [id])
   carId    String   @db.ObjectId
   date     DateTime @default(now())
+  createdAt          DateTime @default(now())
+  startDate          DateTime
+  endDate            DateTime
+  pickupLocationId   String   @db.ObjectId
+  dropoffLocationId  String   @db.ObjectId
+  pickupLocation     Location @relation("PickupLocation", fields: [pickupLocationId], references: [id])
+  dropoffLocation    Location @relation("DropoffLocation", fields: [dropoffLocationId], references: [id])
 }
+//location model
+model Location {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  name        String  
+  address     String
+  city        String
+  country     String
+  pickupBookings   Booking[] @relation("PickupLocation")
+  dropoffBookings  Booking[] @relation("DropoffLocation")
+}
+
  
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId

@@ -1,4 +1,4 @@
-import React from "react";
+// app/cars/page.tsx or wherever this is in App Router
 import Image from "next/image";
 import { db } from "@/db";
 import ClientCarCard from "@/components/ClientCarCard";
@@ -7,8 +7,6 @@ export default async function CarsPage() {
 
 
   const cars = await db.car.findMany();
-  console.log(cars); // Logs to server terminal
-
   return (
     <div className="container mx-auto min-h-screen p-8">
       <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">
@@ -64,12 +62,13 @@ export default async function CarsPage() {
                     </div>
                   ))}
               </div>
-
-              <ClientCarCard key={car.id} car={car} />
+                <BookNowButton key={car.id} car={car} />
             </div>
           </div>
         ))}
       </div>
     </div>
   );
-}
+};
+
+export default CarsPage;

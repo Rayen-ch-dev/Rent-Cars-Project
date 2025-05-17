@@ -10,7 +10,7 @@ const SignIn = () => {
             
             
             {/* Sign up with credentials*/}
-            <Link href="/SignUp">
+            <Link href="/signup">
                 <button>
                     don't have an account? <span className=' text-blue-600 underline font-bold hover:text-blue-800 cursor-pointer'>Sign up</span> 
                 </button>

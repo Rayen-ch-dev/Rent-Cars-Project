@@ -10,6 +10,8 @@ const Header = async () => {
   return (
     <header className="flex bg-black z-50 fixed top-0 w-full left-0 px-3 justify-between items-center py-4">
       <div className="flex items-center gap-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
+    <header className="flex bg-black z-50 fixed top-0 w-full left-0  mx-3 justify-between items-center py-4">
+      <div className="flex  items-center gap-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
         <Image
           src="/images/logo.png"
           alt="logo"
@@ -64,13 +66,13 @@ const Header = async () => {
         ) : (
           <>
             <Link
-              href="/LogIn"
+              href="/login"
               className="border hover:bg-white hover:text-black transition duration-300 text-bl px-4 py-2 rounded-md"
             >
               Sing In
             </Link>
             <Link
-              href="/SignUp"
+              href="/signup"
               className="border hover:bg-black hover:text-white transition duration-300 text-black mr-4 px-4 py-2 bg-amber-50 rounded-md"
             >
               Sing Up

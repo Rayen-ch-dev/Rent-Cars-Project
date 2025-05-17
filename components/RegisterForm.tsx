@@ -33,7 +33,7 @@ export default function RegisterForm() {
   useEffect(() => {
     if (state.status === 201 && state.message) {
       toast.success(state.message);
-      router.push("/LogIn");
+      router.push("/login");
     } else if (state.status && state.status >= 400) {
       toast.error("Registration failed. Please check your input.");
     }
