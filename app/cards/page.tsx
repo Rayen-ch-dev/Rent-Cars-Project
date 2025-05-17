@@ -1,12 +1,11 @@
 import React from 'react'
 
-const pages = () => {
+const page = () => {
   return (
     <div>
-      <h1>Services</h1>
       
     </div>
   )
 }
 
-export default pages
+export default page
