@@ -2,16 +2,9 @@ import React from "react";
 import Image from "next/image";
 import { db } from "@/db";
 import ClientCarCard from "@/components/ClientCarCard";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation"; // For server-side redirects
 
-export default async function CarsPage() {
-  const session = await auth();
-  
-  // Redirect unauthenticated users to /LogIn
-  if (!session) {
-    redirect("/LogIn");
-  }
+export default async function CarsPage() {  
+
 
   const cars = await db.car.findMany();
   console.log(cars); // Logs to server terminal
@@ -30,7 +23,7 @@ export default async function CarsPage() {
           >
             <div className="relative h-48 w-full">
               <Image
-                src={car.imageUrl || "/Images/photoCar-removebg-preview.png"} // Use car.image if available
+                src={car.imageUrl} // Use car.image if available
                 alt={car.name}
                 fill
                 className="object-cover"

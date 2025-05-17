@@ -1,15 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { auth } from "@/auth";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 type Props = {
-  car: any; 
+  car: unknown; 
 };
 export default function ClientCarCard({ car }: Props) {
   const { data: session } = useSession();
-  const router = useRouter();
+
   
   const handleBookNow = () => {
     if(session){
