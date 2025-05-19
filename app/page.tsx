@@ -2,9 +2,10 @@ import Image from "next/image";
 import "./globals.css";
 import Link from "next/link";
 export default function Home() {
+
   return (
-    <div className="container  mx-auto bg-black flex  justify-center items-center">
-      <div className="w-1/2 -ml-64 -mt-28" >
+    <div className="container mb-40 mx-auto bg-black flex  justify-center items-center">
+      <div className="w-1/2 -ml-64 mt-32" >
       <h1 className="text-6xl py-3.5">Car Rental</h1>
       <p className="py-3.5 text-2xl">
         EasyRide offers fast, affordable car rentals with a simple booking
@@ -18,7 +19,7 @@ export default function Home() {
       </Link>
       </div>
       <div className="-mr-64  ">
-        <div className="mt-28">
+        <div className="mt-56">
           <Image
             src={"/Images/photoCar-removebg-preview.png"}
             width={600}

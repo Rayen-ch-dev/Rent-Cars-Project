@@ -3,8 +3,8 @@ import Image from "next/image";
 import { db } from "@/db";
 import BookNowButton from "@/components/BookingNowButton";
 
+export default async function CarsPage() {  
 
-const CarsPage = async () => {
 
   const cars = await db.car.findMany();
   return (
@@ -21,7 +21,7 @@ const CarsPage = async () => {
           >
             <div className="relative h-48 w-full">
               <Image
-                src={"/Images/photoCar-removebg-preview.png"}
+                src={car.imageUrl} // Use car.image if available
                 alt={car.name}
                 fill
                 className="object-cover"
@@ -32,7 +32,7 @@ const CarsPage = async () => {
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-2xl font-bold text-gray-800">{car.name}</h2>
                 <span className="text-xl font-semibold text-blue-600">
-                  ${car.price}
+                  {car.price} DT Per Day
                 </span>
               </div>
 
@@ -71,4 +71,3 @@ const CarsPage = async () => {
   );
 };
 
-export default CarsPage;

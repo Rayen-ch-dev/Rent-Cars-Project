@@ -33,9 +33,9 @@ export default async function CarDetailsPage({ params }: Props) {
         <div className="bg-white/5 backdrop-blur-md rounded-2xl shadow-2xl border border-white/10 overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 p-10">
             {/* Image Section */}
-            <div className="relative h-96 lg:h-[550px] rounded-xl overflow-hidden border border-white/10">
+            <div className="relative h-96 lg:h-[550px] rounded-xl overflow-hidden border border-white/10 bg-white">
               <Image
-                src="/Images/photoCar-removebg-preview.png"
+                src={car.imageUrl} // Use car.image if available"
                 alt={car.name}
                 fill
                 className="object-contain drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]"
@@ -52,7 +52,7 @@ export default async function CarDetailsPage({ params }: Props) {
                     {car.name}
                   </h1>
                   <p className="text-3xl font-semibold text-blue-500 mt-2">
-                    ${car.price.toLocaleString()}
+                    {car.price.toLocaleString()} DT Per Day
                   </p>
                 </div>
 
