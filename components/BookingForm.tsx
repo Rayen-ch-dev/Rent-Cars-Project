@@ -4,6 +4,9 @@ import { getLocations } from "@/app/actions/auth";
 import { toast } from "sonner";
 import { bookingSchema } from "@/validations/auth";
 import type { Car } from "@/types/car";
+import { addBooking } from "@/app/actions/auth";
+import { useRouter } from "next/navigation";
+import { User } from "@/types/user";
 interface Location {
   id: string;
   name: string;
@@ -12,30 +15,35 @@ interface Location {
   country: string;
 }
 
-
-const BookingForm = ({ price, car }: { price: number, car: Car }) => {
+const BookingForm = ({
+  price,
+  car,
+  user,
+}: {
+  price: number;
+  car: Car;
+  user: Pick<User, "id">;
+}) => {
   const formRef = useRef<HTMLFormElement>(null);
   const [locations, setLocations] = useState<Location[]>([]);
   const [TotalePrice, setTotalePrice] = useState<number>(0);
   const [startDate, setStartDate] = useState<Date>(new Date());
-  const [endDate, setEndDate] =  useState<Date | null>(null);
-
+  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [error, setError] = useState<boolean>(false);
-
-
-
+  const router = useRouter();
 
   useEffect(() => {
-    if (!startDate || !endDate ) {
+    if (!startDate || !endDate) {
       setTotalePrice(0);
       setError(false);
       return;
     }
-  
+
     const diffInDays =
       (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24);
-  
+
     if (diffInDays > 0 && price) {
       const total = diffInDays * price;
       setTotalePrice(total);
@@ -45,7 +53,6 @@ const BookingForm = ({ price, car }: { price: number, car: Car }) => {
       setError(true);
     }
   }, [startDate, endDate]);
-  
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -59,36 +66,55 @@ const BookingForm = ({ price, car }: { price: number, car: Car }) => {
     fetchLocations();
   }, []);
 
-  const handleBooking = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleBooking = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
-    const formData = new FormData(e.target as HTMLFormElement);
-  
+
+    const formData = new FormData(formRef.current as HTMLFormElement);
+
     const values = {
       startDate: new Date(formData.get("startDate") as string),
       endDate: new Date(formData.get("endDate") as string),
+      carId: car.id,
+      car: car,
+      pickupLocationId: formData.get("pickupLocation") as string,
+      dropoffLocationId: formData.get("dropoffLocation") as string,
+      totalPrice: TotalePrice,
     };
-    const result = bookingSchema.safeParse(values); 
-   
-    if (!result.success) { 
-      console.error(result.error.format()); 
-      // show error with toast  
-      toast.error("Invalid date range"); 
-      result.error.errors.forEach((err) => toast.error(err.message)); 
-      return; 
-    } 
-  
-    setError(false);
-  
-    console.log(
-      "Valid dates:",
-      values.startDate.toLocaleDateString("fr-FR"),
-      values.endDate.toLocaleDateString("fr-FR")
-    );
+    const result = bookingSchema.safeParse(values);
 
-  
+    if (!result.success) {
+      console.error(result.error.format());
+      toast.error("Invalid date range");
+      result.error.errors.forEach((err) => toast.error(err.message));
+      return;
+    }
+
+    setError(false);
+    try {
+      setIsLoading(true);
+      const formData = new FormData();
+      formData.append("startDate", values.startDate.toISOString());
+      formData.append("endDate", values.endDate.toISOString());
+      formData.append("carId", values.carId);
+      formData.append("pickupLocationId", values.pickupLocationId);
+      formData.append("dropoffLocationId", values.dropoffLocationId);
+      formData.append("userId", user.id);
+
+      const res = await addBooking(formData);
+      if (res.status === 201) {
+        toast.success("Booking added successfully");
+        router.push(`/cards`);
+      } else {
+        console.error("Failed to add booking:", res.error);
+        toast.error("Failed to add booking");
+      }
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error adding booking:", error);
+      toast.error("Error adding booking");
+      setIsLoading(false);
+    }
   };
-  
 
   return (
     <form onSubmit={handleBooking} ref={formRef} className="space-y-4 mt-6">
@@ -122,7 +148,9 @@ const BookingForm = ({ price, car }: { price: number, car: Car }) => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm text-white mb-1">Pickup Location</label>
+          <label className="block text-sm text-white mb-1">
+            Pickup Location
+          </label>
           <select
             name="pickupLocation"
             required
@@ -136,7 +164,9 @@ const BookingForm = ({ price, car }: { price: number, car: Car }) => {
           </select>
         </div>
         <div>
-          <label className="block text-sm text-white mb-1">Drop-off Location</label>
+          <label className="block text-sm text-white mb-1">
+            Drop-off Location
+          </label>
           <select
             name="dropoffLocation"
             required
@@ -160,8 +190,9 @@ const BookingForm = ({ price, car }: { price: number, car: Car }) => {
       <button
         type="submit"
         className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-xl transition duration-200"
+        disabled={isLoading}
       >
-        Book Now
+        {isLoading ? "Booking..." : "Book"}
       </button>
     </form>
   );

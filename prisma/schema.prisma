@@ -45,8 +45,8 @@ model Booking {
   carId    String   @db.ObjectId
   date     DateTime @default(now())
   createdAt          DateTime @default(now())
-  startDate          DateTime
-  endDate            DateTime
+  startDate          String
+  endDate            String
   pickupLocationId   String   @db.ObjectId
   dropoffLocationId  String   @db.ObjectId
   pickupLocation     Location @relation("PickupLocation", fields: [pickupLocationId], references: [id])

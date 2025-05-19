@@ -1,9 +1,8 @@
-
 import { notFound, redirect } from "next/navigation";
 import { db } from "@/db";
 import Image from "next/image";
 import BookingForm from "@/components/BookingForm";
-
+import { auth } from "@/auth";
 
 type Props = {
   params: {
@@ -12,6 +11,7 @@ type Props = {
 };
 
 export default async function CarDetailsPage({ params }: Props) {
+  const session = await auth();
   if (!/^[0-9a-fA-F]{24}$/.test(params.id)) {
     redirect("/cards");
   }
@@ -25,7 +25,6 @@ export default async function CarDetailsPage({ params }: Props) {
   if (!car) {
     return notFound();
   }
-
 
   return (
     <div className="min-h-screen mt-20 shadow-white/10">
@@ -103,11 +102,15 @@ export default async function CarDetailsPage({ params }: Props) {
                 </div>
 
                 {/* Booking Form */}
-                <BookingForm price={car.price} car={car} />
-
+                {session?.user && session.user.id && (
+                  <BookingForm
+                    price={car.price}
+                    car={car}
+                    user={{ id: session.user.id }}
+                  />
+                )}
               </div>
 
-            
               <div className="mt-8">
                 <button className="w-full bg-white/10 hover:bg-white/20 text-white font-medium py-3 px-6 rounded-xl transition duration-200">
                   Contact Dealer

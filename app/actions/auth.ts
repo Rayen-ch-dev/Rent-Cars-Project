@@ -139,10 +139,9 @@ export const getLocations = async () => {
     const locations = await db.location.findMany();
     return {
       status: 200,
-      body: { 
-        locations: locations 
-      } 
-      
+      body: {
+        locations: locations,
+      },
     };
   } catch (error) {
     console.error("Error getting locations:", error);
@@ -152,4 +151,31 @@ export const getLocations = async () => {
     };
   }
 };
-//add in booking
+//add booking
+export const addBooking = async (formData: FormData) => {
+  try {
+    const data = {
+      startDate: formData.get("startDate") as string,
+      endDate: formData.get("endDate") as string,
+      carId: formData.get("carId") as string,
+      pickupLocationId: formData.get("pickupLocationId") as string,
+      dropoffLocationId: formData.get("dropoffLocationId") as string,
+      userId: formData.get("userId") as string,
+    };
+
+    const booking = await db.booking.create({
+      data,
+    });
+
+    return {
+      status: 201,
+      body: booking,
+    };
+  } catch (error) {
+    console.error("Error adding booking:", error);
+    return {
+      status: 500,
+      error: "Internal server error",
+    };
+  }
+};

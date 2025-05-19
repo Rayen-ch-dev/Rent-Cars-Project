@@ -62,6 +62,10 @@ export const signupSchema = z
   export const bookingSchema = z.object({
     startDate: z.coerce.date({ required_error: "Start date is required" }),
     endDate: z.coerce.date({ required_error: "End date is required" }),
+    carId: z.string({ required_error: "Car ID is required" }),
+    pickupLocationId: z.string({ required_error: "Pickup location ID is required" }),
+    dropoffLocationId: z.string({ required_error: "Dropoff location ID is required" }),
+    totalPrice: z.number({ required_error: "Total price is required" }),
   }).refine((data) => data.endDate > data.startDate, {
     message: "End date must be after start date",
     path: ["endDate"],
@@ -71,7 +75,20 @@ export const signupSchema = z
   }, {
     message: "The range must be 30 days or less",
     path: ["endDate"],
+  }).refine((data) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return data.startDate >= today;
+  }, {
+    message: "Start date cannot be in the past",
+    path: ["startDate"],
+  }).refine((data) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return data.endDate >= today;
+  }, {
+    message: "End date cannot be in the past",
+    path: ["endDate"],
   });
-  
 const result = loginSchema.safeParse({});
 export const validationErrors = !result.success ? result.error : null;
