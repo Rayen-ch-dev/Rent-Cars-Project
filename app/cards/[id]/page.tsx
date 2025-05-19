@@ -103,11 +103,11 @@ export default async function CarDetailsPage({ params }: Props) {
                 </div>
 
                 {/* Booking Form */}
-                <BookingForm />
+                <BookingForm price={car.price} car={car} />
 
               </div>
 
-              {/* Optional: Contact Dealer */}
+            
               <div className="mt-8">
                 <button className="w-full bg-white/10 hover:bg-white/20 text-white font-medium py-3 px-6 rounded-xl transition duration-200">
                   Contact Dealer

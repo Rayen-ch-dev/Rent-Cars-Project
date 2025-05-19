@@ -1,7 +1,7 @@
 "use server";
 import bcrypt from "bcrypt";
 import { db } from "@/db";
-import { loginSchema } from "./../../validations/auth";
+import { bookingSchema, loginSchema } from "./../../validations/auth";
 import { login as log } from "./auth";
 import { signupSchema } from "@/validations/auth";
 
@@ -152,3 +152,4 @@ export const getLocations = async () => {
     };
   }
 };
+//add in booking
