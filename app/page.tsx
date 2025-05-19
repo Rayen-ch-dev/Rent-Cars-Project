@@ -25,7 +25,6 @@ export default function Home() {
             height={600}
             alt="backgroundImage"
           />
-          <h1>hello from master</h1>
         </div>
       </div>
       
