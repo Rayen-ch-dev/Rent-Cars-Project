@@ -1,7 +1,7 @@
 // app/cars/page.tsx or wherever this is in App Router
 import Image from "next/image";
 import { db } from "@/db";
-import ClientCarCard from "@/components/ClientCarCard";
+import BookNowButton from "@/components/BookingNowButton";
 
 export default async function CarsPage() {  
 
@@ -32,7 +32,7 @@ export default async function CarsPage() {
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-2xl font-bold text-gray-800">{car.name}</h2>
                 <span className="text-xl font-semibold text-blue-600">
-                  ${car.price}
+                  {car.price} DT Per Day
                 </span>
               </div>
 
@@ -71,4 +71,3 @@ export default async function CarsPage() {
   );
 };
 
-export default CarsPage;
