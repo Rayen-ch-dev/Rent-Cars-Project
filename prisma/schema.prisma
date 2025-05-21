@@ -7,8 +7,8 @@ generator client {
   provider = "prisma-client-js"
 }
 enum UserRole {
-  ADMIN
-  USER
+  ADMIN  
+  USER   
 }
 model User {
   id            String          @id @default(auto()) @map("_id") @db.ObjectId
@@ -21,7 +21,6 @@ model User {
   sessions      Session[]
   role          UserRole      @default(USER)
   bookings   Booking[]       @relation(fields: [], references: [])
-  // Optional for WebAuthn support
   Authenticator Authenticator[]
  
   createdAt DateTime @default(now())
@@ -45,8 +44,8 @@ model Booking {
   carId    String   @db.ObjectId
   date     DateTime @default(now())
   createdAt          DateTime @default(now())
-  startDate          String
-  endDate            String
+  startDate          DateTime
+  endDate            DateTime
   pickupLocationId   String   @db.ObjectId
   dropoffLocationId  String   @db.ObjectId
   pickupLocation     Location @relation("PickupLocation", fields: [pickupLocationId], references: [id])

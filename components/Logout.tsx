@@ -1,11 +1,20 @@
 "use client";
 
 import { logout } from "@/app/actions/auth";
+import { ReactNode } from "react";
 
-export default function Logout() {
+interface LogoutProps {
+  children: ReactNode;
+}
+
+export default function Logout({ children }: LogoutProps) {
   return (
-    <div className="border cursor-pointer hover:bg-white hover:text-black transition duration-300 text-white mr-4 px-4 py-2 rounded-md" onClick={() => logout()}>
-      <div className="flex justify-center items-center gap-2">Logout</div>
-    </div>
+    <button
+      onClick={() => logout()}
+      className="flex items-center justify-center gap-1 text-sm text-white border border-white px-2 p-2 rounded-full hover:bg-white hover:text-black transition duration-300"
+      title="Logout"
+    >
+      {children}
+    </button>
   );
 }

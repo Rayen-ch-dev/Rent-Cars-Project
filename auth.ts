@@ -5,6 +5,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "./db";
 import bcrypt from "bcrypt";
 import { redirect } from "next/dist/server/api-utils";
+import { UserRole } from "@prisma/client";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(db),
@@ -51,6 +52,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           id: user.id,
           name: user.name,
           email: user.email,
+          role: user.role,
         };
       },
     }),
@@ -69,38 +71,38 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     },
   },
-  // Add callback to ensure user data is saved in the token/session
+
   callbacks: {
     jwt: async ({ token, user }: { token: any; user: any }) => {
       if (user) {
         token.id = user.id;
         token.email = user.email;
+        token.role = user.role;
       }
       return token;
     },
     session: async ({ session, token }: { session: any; token: any }) => {
       if (session.user) {
         session.user.id = token.id;
+        session.user.role = token.role;
       }
       return session;
     },
     redirect: async ({ url, baseUrl }) => {
-      // If the URL is relative, make it absolute
       if (url.startsWith("/")) {
-        // Check if the URL contains an invalid card ID
         if (
           url.includes("/cards/") &&
           !/^[0-9a-fA-F]{24}$/.test(url.split("/cards/")[1])
         ) {
-          return `${baseUrl}/cards`; // Redirect to cards list if ID is invalid
+          return `${baseUrl}/cards`;
         }
         return `${baseUrl}${url}`;
       }
-      // If the URL is from the same origin, allow it
+
       if (new URL(url).origin === baseUrl) {
         return url;
       }
-      // Default to base URL for any other cases
+
       return baseUrl;
     },
   },

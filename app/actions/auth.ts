@@ -179,3 +179,118 @@ export const addBooking = async (formData: FormData) => {
     };
   }
 };
+
+interface Car {
+  id: string;
+  name: string;
+  model: string;
+  year: number;
+  price: number;
+  image: string;
+}
+
+export async function updateCar(formData: FormData): Promise<void> {
+  const carId = formData.get("id") as string;
+  const data = {
+    name: formData.get("name") as string,
+    description: formData.get("description") as string,
+    year: parseInt(formData.get("year") as string),
+    price: parseFloat(formData.get("price") as string),
+    imageUrl: formData.get("imageUrl") as string,
+    features: (formData.get("features") as string)
+      .split(",")
+      .map((f) => f.trim()),
+  };
+
+  try {
+    await db.car.update({
+      where: { id: carId },
+      data,
+    });
+    revalidatePath("/dashboard");
+  } catch (error) {
+    console.error("Error updating car:", error);
+    throw error;
+  }
+}
+export async function removeCar(carId: string): Promise<void> {
+  try {
+    await db.car.delete({
+      where: { id: carId },
+    });
+    revalidatePath("/dashboard");
+  } catch (error) {
+    console.error("Error removing car:", error);
+  }
+}
+//get all cars
+export async function getCars() {
+  try {
+    const cars = await db.car.findMany({
+      orderBy: {
+        id: "desc",
+      },
+    });
+    return cars;
+  } catch (error) {
+    console.error("Error fetching cars:", error);
+    return [];
+  }
+}
+//add car
+export async function addCar(formData: FormData): Promise<void> {
+  try {
+    const data = {
+      name: formData.get("name") as string,
+      description: formData.get("description") as string,
+      imageUrl: formData.get("imageUrl") as string,
+      features: (formData.get("features") as string)
+        .split(",")
+        .map((f) => f.trim()),
+      year: parseInt(formData.get("year") as string),
+      price: parseFloat(formData.get("price") as string),
+    };
+
+    await db.car.create({
+      data,
+    });
+  } catch (error) {
+    console.error("Error adding car:", error);
+    throw error;
+  }
+}
+
+// delete booking
+export async function deleteBooking(formData: FormData): Promise<void> {
+  try {
+    const bookingId = formData.get("bookingId") as string;
+    await db.booking.delete({
+      where: { id: bookingId },
+    });
+    revalidatePath("/profile");
+  } catch (error) {
+    console.error("Error deleting booking:", error);
+  }
+}
+//update booking
+export async function updateBooking(formData: FormData): Promise<void> {
+  const bookingId = formData.get("bookingId") as string;
+  const data = {
+    startDate: formData.get("startDate") as string,
+    endDate: formData.get("endDate") as string,
+    carId: formData.get("carId") as string,
+    pickupLocationId: formData.get("pickupLocationId") as string,
+    dropoffLocationId: formData.get("dropoffLocationId") as string,
+    userId: formData.get("userId") as string,
+  };
+
+  try {
+    await db.booking.update({
+      where: { id: bookingId },
+      data,
+    });
+    revalidatePath("/profile");
+  } catch (error) {
+    console.error("Error updating booking:", error);
+  }
+}
