@@ -8,15 +8,13 @@ import { db } from "@/db";
 
 const Header = async () => {
   const session = await auth();
-  const user = await db.user.findUnique({
-    where: {
-      id: session?.user?.id,
-    },
-  });
 
-  console.log("Session user:", session?.user);
-  console.log("DB user:", user);
-  console.log("User role:", user?.role);
+  let user = null;
+  if (session?.user?.id) {
+    user = await db.user.findUnique({
+      where: { id: session.user.id },
+    });
+  }
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-black px-6 py-4 shadow-lg flex justify-between items-center">

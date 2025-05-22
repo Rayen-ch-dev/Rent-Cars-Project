@@ -294,3 +294,5 @@ export async function updateBooking(formData: FormData): Promise<void> {
     console.error("Error updating booking:", error);
   }
 }
+
+//display booking details

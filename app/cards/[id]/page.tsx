@@ -15,6 +15,9 @@ export default async function CarDetailsPage({ params }: Props) {
   if (!/^[0-9a-fA-F]{24}$/.test(params.id)) {
     redirect("/cards");
   }
+  if (!session?.user) {
+    redirect("/login");
+  }
 
   const car = await db.car.findUnique({
     where: {
