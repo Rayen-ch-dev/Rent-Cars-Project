@@ -6,6 +6,8 @@ import Image from "next/image";
 import { getCars } from "../actions/auth";
 import DeleteButton from "../../components/DeleteButton";
 import EditButton from "../../components/EditButton";
+import AddCarForm from "../../components/AddCarForm";
+import { format } from "date-fns";
 
 const Page = async () => {
   const session = await auth();
@@ -13,7 +15,6 @@ const Page = async () => {
   if (!session?.user) {
     redirect("/login");
   }
-
 
   const user = await db.user.findUnique({
     where: {
@@ -26,6 +27,19 @@ const Page = async () => {
   }
 
   const cars = await getCars();
+
+
+  const bookings = await db.booking.findMany({
+    include: {
+      user: true,
+      car: true,
+      pickupLocation: true,
+      dropoffLocation: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
 
   return (
     <div className="min-h-screen mt-16 bg-black">
@@ -50,6 +64,15 @@ const Page = async () => {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        {/* Add New Car Section */}
+        <div className="mb-12">
+          <h3 className="text-lg font-medium mb-4 text-white">Add New Car</h3>
+          <div className="bg-black/50 border border-white/20 rounded-lg p-6">
+            <AddCarForm />
+          </div>
+        </div>
+
+        {/* Car List Section */}
         <div className="mt-8">
           <h3 className="text-lg font-medium mb-4 text-white">Car List</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -86,6 +109,78 @@ const Page = async () => {
                     }}
                   />
                   <DeleteButton carId={car.id} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Bookings Section */}
+        <div className="mt-12">
+          <h3 className="text-lg font-medium mb-4 text-white">All Bookings</h3>
+          <div className="grid grid-cols-1 gap-6">
+            {bookings.map((booking) => (
+              <div
+                key={booking.id}
+                className="border border-white/20 rounded-lg p-6 bg-black/50 hover:bg-black/70 transition-colors duration-200"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Car Information */}
+                  <div>
+                    <h4 className="text-lg font-medium text-white mb-4">
+                      Car Details
+                    </h4>
+                    <div className="aspect-w-16 aspect-h-9 mb-4 rounded-md overflow-hidden border border-white/20">
+                      <Image
+                        src={booking.car.imageUrl || "/car-placeholder.jpg"}
+                        alt={booking.car.name}
+                        width={300}
+                        height={200}
+                        className="object-cover w-full h-full"
+                      />
+                    </div>
+                    <p className="text-gray-400">Car: {booking.car.name}</p>
+                    <p className="text-gray-400">
+                      Price: ${booking.car.price}/day
+                    </p>
+                  </div>
+
+                  {/* Booking and User Information */}
+                  <div>
+                    <h4 className="text-lg font-medium text-white mb-4">
+                      Booking Details
+                    </h4>
+                    <div className="space-y-2">
+                      <p className="text-gray-400">
+                        <span className="text-white">User:</span>{" "}
+                        {booking.user.name}
+                      </p>
+                      <p className="text-gray-400">
+                        <span className="text-white">Email:</span>{" "}
+                        {booking.user.email}
+                      </p>
+                      <p className="text-gray-400">
+                        <span className="text-white">Start Date:</span>{" "}
+                        {format(new Date(booking.startDate), "PPP")}
+                      </p>
+                      <p className="text-gray-400">
+                        <span className="text-white">End Date:</span>{" "}
+                        {format(new Date(booking.endDate), "PPP")}
+                      </p>
+                      <p className="text-gray-400">
+                        <span className="text-white">Pickup Location:</span>{" "}
+                        {booking.pickupLocation.name}
+                      </p>
+                      <p className="text-gray-400">
+                        <span className="text-white">Dropoff Location:</span>{" "}
+                        {booking.dropoffLocation.name}
+                      </p>
+                      <p className="text-gray-400">
+                        <span className="text-white">Booking Date:</span>{" "}
+                        {format(new Date(booking.createdAt), "PPP")}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}

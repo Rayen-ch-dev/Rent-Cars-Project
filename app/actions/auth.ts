@@ -296,3 +296,66 @@ export async function updateBooking(formData: FormData): Promise<void> {
 }
 
 //display booking details
+
+// Update profile
+export async function updateProfile(formData: FormData): Promise<void> {
+  const userId = formData.get("userId") as string;
+  const data = {
+    name: formData.get("name") as string,
+    email: formData.get("email") as string,
+  };
+
+  try {
+    await db.user.update({
+      where: { id: userId },
+      data,
+    });
+    revalidatePath("/profile");
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    throw error;
+  }
+}
+
+// Change password
+export async function changePassword(formData: FormData): Promise<void> {
+  const userId = formData.get("userId") as string;
+  const currentPassword = formData.get("currentPassword") as string;
+  const newPassword = formData.get("newPassword") as string;
+  const confirmPassword = formData.get("confirmPassword") as string;
+
+  if (newPassword !== confirmPassword) {
+    throw new Error("New passwords do not match");
+  }
+
+  try {
+    const user = await db.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user?.password) {
+      throw new Error("User not found or no password set");
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(
+      currentPassword,
+      user.password
+    );
+
+    if (!isPasswordCorrect) {
+      throw new Error("Current password is incorrect");
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await db.user.update({
+      where: { id: userId },
+      data: { password: hashedPassword },
+    });
+
+    revalidatePath("/profile");
+  } catch (error) {
+    console.error("Error changing password:", error);
+    throw error;
+  }
+}

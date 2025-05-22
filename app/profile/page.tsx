@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import Image from "next/image";
 import { db } from "@/db";
 import { deleteBooking, updateBooking } from "@/app/actions/auth";
+import { EditProfileForm } from "@/components/EditProfileForm";
+import { ChangePasswordForm } from "@/components/ChangePasswordForm";
 
 const ProfilePage = async () => {
   const session = await auth();
@@ -41,7 +43,7 @@ const ProfilePage = async () => {
             <div className="absolute -bottom-16 left-8">
               <div className="relative w-32 h-32 rounded-full border-4 border-blue-500 overflow-hidden shadow-md">
                 <Image
-                  src={session.user.image || "/images/userIcon.png"}
+                  src={session.user.image || "/images/user.png"}
                   alt="Profile"
                   fill
                   className="object-cover"
@@ -81,12 +83,18 @@ const ProfilePage = async () => {
 
             {/* Profile Actions */}
             <div className="flex flex-wrap gap-4">
-              <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold">
-                Edit Profile
-              </button>
-              <button className="px-6 py-2 border border-blue-500 text-blue-400 rounded-lg hover:bg-blue-900 transition-colors font-semibold">
-                Change Password
-              </button>
+              {user && (
+                <>
+                  <EditProfileForm
+                    user={{
+                      id: user.id,
+                      name: user.name || "",
+                      email: user.email || "",
+                    }}
+                  />
+                  <ChangePasswordForm userId={user.id} />
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -105,7 +113,7 @@ const ProfilePage = async () => {
               >
                 <div className="relative h-48 w-full">
                   <Image
-                    src={booking.car.imageUrl || "/images/car-placeholder.jpg"}
+                    src={booking.car.imageUrl}
                     alt={booking.car.name}
                     fill
                     className="object-cover"
